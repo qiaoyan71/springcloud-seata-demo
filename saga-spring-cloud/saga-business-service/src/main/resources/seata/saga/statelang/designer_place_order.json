@@ -1,0 +1,529 @@
+{
+  "nodes": [
+    {
+      "type": "node",
+      "size": "110*48",
+      "shape": "flow-rect",
+      "color": "#1890FF",
+      "label": "productService",
+      "stateId": "productService",
+      "stateType": "ServiceTask",
+      "stateProps": {
+        "ServiceName": "cn.dmego.seata.saga.business.feign.ProductService",
+        "ServiceMethod": "reduceStock",
+        "Input": [
+          "$.[productId]",
+          "$.[count]"
+        ],
+        "Output": {
+          "productResult": "$.#root"
+        },
+        "Status": {
+          "#root == true": "SU",
+          "#root == false": "FA",
+          "$Exception{java.lang.Throwable}": "UN"
+        },
+        "Retry": []
+      },
+      "x": 418.375,
+      "y": 408.30000000000047,
+      "id": "53840010",
+      "index": 17
+    },
+    {
+      "type": "node",
+      "size": "72*72",
+      "shape": "flow-circle",
+      "color": "#FA8C16",
+      "label": "Start",
+      "stateId": "Start1",
+      "stateType": "Start",
+      "stateProps": {
+        "StateMachine": {
+          "Name": "BusinessOrder",
+          "Comment": "business pacle order",
+          "Version": "0.0.1"
+        }
+      },
+      "x": 418.375,
+      "y": -104.99999999999977,
+      "id": "49ab9ca8",
+      "index": 18
+    },
+    {
+      "type": "node",
+      "size": "110*48",
+      "shape": "flow-rect",
+      "color": "#1890FF",
+      "label": "orderService",
+      "stateId": "orderService",
+      "stateType": "ServiceTask",
+      "stateProps": {
+        "ServiceName": "cn.dmego.seata.saga.business.feign.OrderService",
+        "ServiceMethod": "createOrder",
+        "Input": [
+          "$.[orderId]",
+          "$.[userId]",
+          "$.[productId]",
+          "$.[amount]",
+          "$.[count]"
+        ],
+        "Output": {
+          "orderResult": "$.#root"
+        },
+        "Status": {
+          "#root == true": "SU",
+          "#root == false": "FA",
+          "$Exception{java.lang.Throwable}": "UN"
+        },
+        "Retry": []
+      },
+      "x": 418.375,
+      "y": -9.799999999999955,
+      "id": "eab1503c",
+      "index": 19
+    },
+    {
+      "type": "node",
+      "size": "39*39",
+      "shape": "flow-circle",
+      "color": "red",
+      "label": "Catch",
+      "stateId": "Catch2",
+      "stateType": "Catch",
+      "x": 478.875,
+      "y": -9.799999999999955,
+      "id": "2b243591",
+      "index": 20
+    },
+    {
+      "type": "node",
+      "size": "110*48",
+      "shape": "flow-capsule",
+      "color": "red",
+      "label": "Compensation\nTrigger",
+      "stateId": "CompensationTrigger",
+      "stateType": "CompensationTrigger",
+      "x": 637.575,
+      "y": 214.80000000000007,
+      "id": "90741f28",
+      "index": 21
+    },
+    {
+      "type": "node",
+      "size": "110*48",
+      "shape": "flow-capsule",
+      "color": "#722ED1",
+      "label": "compensateOrder",
+      "stateId": "compensateOrder",
+      "stateType": "Compensation",
+      "stateProps": {
+        "ServiceName": "cn.dmego.seata.saga.business.feign.OrderService",
+        "ServiceMethod": "revokeOrder",
+        "Input": [
+          "$.[orderId]"
+        ],
+        "Output": {},
+        "Status": {},
+        "Retry": []
+      },
+      "x": 221.575,
+      "y": -104.99999999999977,
+      "id": "f2c689a3",
+      "index": 22
+    },
+    {
+      "type": "node",
+      "size": "72*72",
+      "shape": "flow-circle",
+      "color": "#05A465",
+      "label": "Succeed",
+      "stateId": "Succeed",
+      "stateType": "Succeed",
+      "x": 417.875,
+      "y": 600.6000000000001,
+      "id": "e26bd497",
+      "index": 23
+    },
+    {
+      "type": "node",
+      "size": "110*48",
+      "shape": "flow-rect",
+      "color": "#1890FF",
+      "label": "accountService",
+      "stateId": "accountService",
+      "stateType": "ServiceTask",
+      "stateProps": {
+        "ServiceName": "cn.dmego.seata.saga.business.feign.AccountService",
+        "ServiceMethod": "reduceBalance",
+        "Input": [
+          "$.[userId]",
+          "$.[amount]"
+        ],
+        "Output": {
+          "accountResult": "$.#root"
+        },
+        "Status": {
+          "#root == true": "SU",
+          "#root == false": "FA",
+          "$Exception{java.lang.Throwable}": "UN"
+        },
+        "Retry": []
+      },
+      "x": 418.075,
+      "y": 215.30000000000007,
+      "id": "53ebb790",
+      "index": 24
+    },
+    {
+      "type": "node",
+      "size": "110*48",
+      "shape": "flow-capsule",
+      "color": "#722ED1",
+      "label": "compensateAccount",
+      "stateId": "compensateAccount",
+      "stateType": "Compensation",
+      "stateProps": {
+        "ServiceName": "cn.dmego.seata.saga.business.feign.AccountService",
+        "ServiceMethod": "compensateBalance",
+        "Input": [
+          "$.[userId]",
+          "$.[amount]"
+        ],
+        "Output": {},
+        "Status": {},
+        "Retry": []
+      },
+      "x": 223.575,
+      "y": 99.30000000000007,
+      "id": "4b88c155",
+      "index": 25
+    },
+    {
+      "type": "node",
+      "size": "80*72",
+      "shape": "flow-rhombus",
+      "color": "#13C2C2",
+      "label": "Choice",
+      "stateId": "Choice2",
+      "stateType": "Choice",
+      "x": 418.375,
+      "y": 98.80000000000007,
+      "id": "726db8cf",
+      "index": 26
+    },
+    {
+      "type": "node",
+      "size": "80*72",
+      "shape": "flow-rhombus",
+      "color": "#13C2C2",
+      "label": "Choice",
+      "stateId": "Choice3",
+      "stateType": "Choice",
+      "x": 417.875,
+      "y": 300.30000000000047,
+      "id": "efc7cad0",
+      "index": 27
+    },
+    {
+      "type": "node",
+      "size": "39*39",
+      "shape": "flow-circle",
+      "color": "red",
+      "label": "Catch",
+      "stateId": "Catch3",
+      "stateType": "Catch",
+      "x": 474.875,
+      "y": 408.30000000000047,
+      "id": "0f955d7f",
+      "index": 28
+    },
+    {
+      "type": "node",
+      "size": "39*39",
+      "shape": "flow-circle",
+      "color": "red",
+      "label": "Catch",
+      "stateId": "Catch4",
+      "stateType": "Catch",
+      "x": 479.375,
+      "y": 214.80000000000007,
+      "id": "c319673d",
+      "index": 29
+    },
+    {
+      "type": "node",
+      "size": "110*48",
+      "shape": "flow-capsule",
+      "color": "#722ED1",
+      "label": "compensateStock",
+      "stateId": "compensateStock",
+      "stateType": "Compensation",
+      "stateProps": {
+        "ServiceName": "cn.dmego.seata.saga.business.feign.ProductService",
+        "ServiceMethod": "compensateStock",
+        "Input": [
+          "$.[productId]",
+          "$.[count]"
+        ],
+        "Output": {},
+        "Status": {},
+        "Retry": []
+      },
+      "x": 221.075,
+      "y": 324.80000000000047,
+      "id": "e8db76de",
+      "index": 30
+    },
+    {
+      "type": "node",
+      "size": "72*72",
+      "shape": "flow-circle",
+      "color": "red",
+      "label": "Fail",
+      "stateId": "Fail1",
+      "stateType": "Fail",
+      "stateProps": {
+        "ErrorCode": "PURCHASE_FAILED",
+        "Message": "purchase failed"
+      },
+      "x": 745.075,
+      "y": 594.6000000000001,
+      "id": "34cde70a",
+      "index": 31
+    },
+    {
+      "type": "node",
+      "size": "80*72",
+      "shape": "flow-rhombus",
+      "color": "#13C2C2",
+      "label": "Choice",
+      "stateId": "Choice1",
+      "stateType": "Choice",
+      "x": 417.875,
+      "y": 489.30000000000047,
+      "id": "44f5a38a",
+      "index": 32
+    }
+  ],
+  "edges": [
+    {
+      "source": "eab1503c",
+      "sourceAnchor": 3,
+      "target": "f2c689a3",
+      "targetAnchor": 2,
+      "id": "8dcd04d4",
+      "shape": "flow-polyline-round",
+      "style": {
+        "lineDash": "4",
+        "endArrow": false
+      },
+      "type": "Compensation",
+      "index": 0
+    },
+    {
+      "source": "53ebb790",
+      "sourceAnchor": 3,
+      "target": "4b88c155",
+      "targetAnchor": 2,
+      "id": "7931f623",
+      "shape": "flow-polyline-round",
+      "style": {
+        "lineDash": "4",
+        "endArrow": false
+      },
+      "type": "Compensation",
+      "index": 1
+    },
+    {
+      "source": "eab1503c",
+      "sourceAnchor": 2,
+      "target": "726db8cf",
+      "targetAnchor": 0,
+      "id": "f3e5c273",
+      "shape": "flow-polyline-round",
+      "index": 2
+    },
+    {
+      "source": "726db8cf",
+      "sourceAnchor": 2,
+      "target": "53ebb790",
+      "targetAnchor": 0,
+      "id": "0a936111",
+      "shape": "flow-polyline-round",
+      "stateProps": {
+        "Expression": "[orderResult] == true",
+        "Next": "accountService"
+      },
+      "label": "",
+      "index": 3
+    },
+    {
+      "source": "53ebb790",
+      "sourceAnchor": 2,
+      "target": "efc7cad0",
+      "targetAnchor": 0,
+      "id": "58bac653",
+      "shape": "flow-polyline-round",
+      "index": 4
+    },
+    {
+      "source": "efc7cad0",
+      "sourceAnchor": 2,
+      "target": "53840010",
+      "targetAnchor": 0,
+      "id": "7f6bfcc8",
+      "shape": "flow-polyline-round",
+      "stateProps": {
+        "Expression": "[accountResult] == true",
+        "Next": "productService"
+      },
+      "label": "",
+      "index": 5
+    },
+    {
+      "source": "2b243591",
+      "sourceAnchor": 1,
+      "target": "90741f28",
+      "targetAnchor": 0,
+      "id": "d6803f6a",
+      "shape": "flow-polyline-round",
+      "stateProps": {
+        "Exceptions": [
+          "java.lang.Throwable"
+        ],
+        "Next": "CompensationTrigger"
+      },
+      "label": "",
+      "index": 6
+    },
+    {
+      "source": "0f955d7f",
+      "sourceAnchor": 1,
+      "target": "90741f28",
+      "targetAnchor": 2,
+      "id": "58eca5df",
+      "shape": "flow-smooth",
+      "stateProps": {
+        "Exceptions": [
+          "java.lang.Throwable"
+        ],
+        "Next": "CompensationTrigger"
+      },
+      "label": "",
+      "index": 8
+    },
+    {
+      "source": "53840010",
+      "sourceAnchor": 3,
+      "target": "e8db76de",
+      "targetAnchor": 2,
+      "id": "d972c23c",
+      "shape": "flow-polyline-round",
+      "style": {
+        "lineDash": "4",
+        "endArrow": false
+      },
+      "type": "Compensation",
+      "index": 9
+    },
+    {
+      "source": "90741f28",
+      "sourceAnchor": 1,
+      "target": "34cde70a",
+      "targetAnchor": 0,
+      "id": "bd4df35c",
+      "shape": "flow-polyline-round",
+      "index": 10
+    },
+    {
+      "source": "726db8cf",
+      "sourceAnchor": 1,
+      "target": "90741f28",
+      "targetAnchor": 0,
+      "id": "5ebec755",
+      "shape": "flow-smooth",
+      "stateProps": {
+        "Expression": "[orderResult] == false",
+        "Next": "CompensationTrigger"
+      },
+      "label": "",
+      "index": 11
+    },
+    {
+      "source": "efc7cad0",
+      "sourceAnchor": 1,
+      "target": "90741f28",
+      "targetAnchor": 2,
+      "id": "e9da5adc",
+      "shape": "flow-smooth",
+      "stateProps": {
+        "Expression": "[accountResult] == false",
+        "Next": "CompensationTrigger"
+      },
+      "label": "",
+      "index": 12
+    },
+    {
+      "source": "49ab9ca8",
+      "sourceAnchor": 2,
+      "target": "eab1503c",
+      "targetAnchor": 0,
+      "id": "1a18eb9b",
+      "shape": "flow-polyline-round",
+      "index": 13
+    },
+    {
+      "source": "53840010",
+      "sourceAnchor": 2,
+      "target": "44f5a38a",
+      "targetAnchor": 0,
+      "id": "0094693a",
+      "shape": "flow-polyline-round",
+      "index": 14
+    },
+    {
+      "source": "44f5a38a",
+      "sourceAnchor": 2,
+      "target": "e26bd497",
+      "targetAnchor": 0,
+      "id": "0124b5fd",
+      "shape": "flow-polyline-round",
+      "stateProps": {
+        "Expression": "[productResult] == true",
+        "Next": "Succeed"
+      },
+      "label": "",
+      "index": 15
+    },
+    {
+      "source": "44f5a38a",
+      "sourceAnchor": 1,
+      "target": "90741f28",
+      "id": "f800d57d",
+      "stateProps": {
+        "Expression": "[productResult] == false",
+        "Next": "CompensationTrigger"
+      },
+      "targetAnchor": 2,
+      "label": "",
+      "shape": "flow-polyline-round",
+      "index": 16
+    },
+    {
+      "source": "c319673d",
+      "sourceAnchor": 1,
+      "target": "90741f28",
+      "targetAnchor": 3,
+      "id": "4532da51",
+      "shape": "flow-polyline-round",
+      "stateProps": {
+        "Exceptions": [
+          "java.lang.Throwable"
+        ],
+        "Next": "CompensationTrigger"
+      },
+      "label": ""
+    }
+  ]
+}
