@@ -1,3 +1,6 @@
+CREATE DATABASE seata_tcc_transfer;
+USE seata_tcc_transfer;
+
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 

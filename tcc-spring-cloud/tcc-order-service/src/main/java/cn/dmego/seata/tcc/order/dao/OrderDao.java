@@ -6,13 +6,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
-/**
- * @className: OrderDao
- *
- * @description: 订单服务 Dao
- * @author: ZengKai<dmeago@gmail.com>
- * @date: 2020/12/7 17:27
- **/
 @Mapper
 @Repository
 public interface OrderDao {

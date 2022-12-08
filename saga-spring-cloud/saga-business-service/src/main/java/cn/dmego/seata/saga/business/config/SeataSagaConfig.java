@@ -7,19 +7,18 @@ import io.seata.saga.rm.StateMachineEngineHolder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.concurrent.ThreadPoolExecutor;
 
+
 /**
- * SeataSagaConfig
+ * seata配置
  *
- * @author dmego
- * @date 2021/3/31 10:47
+ * @author qiaoyan
+ * @date 2022-12-05 15:19:41
  */
 @Configuration
 public class SeataSagaConfig {
@@ -54,12 +53,17 @@ public class SeataSagaConfig {
      */
     @Bean
     public DbStateMachineConfig getDbStateMachineConfig(DataSource dataSource, ThreadPoolExecutor threadPoolExecutor) throws IOException {
+
+        /*
+        老版本写法:
         PathMatchingResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
         Resource[] resources = resourcePatternResolver.getResources("classpath:statelang/*.json");
+        dbStateMachineConfig.setResources(new String[]{"classpath:statelang/*.json"});
+         */
 
         DbStateMachineConfig dbStateMachineConfig = new DbStateMachineConfig();
         dbStateMachineConfig.setDataSource(dataSource);
-        dbStateMachineConfig.setResources(resources);
+        dbStateMachineConfig.setResources(new String[]{"classpath:seata/saga/statelang/**/*.json"});
         dbStateMachineConfig.setEnableAsync(true);
         dbStateMachineConfig.setThreadPoolExecutor(threadPoolExecutor);
         dbStateMachineConfig.setApplicationId(applicationId);

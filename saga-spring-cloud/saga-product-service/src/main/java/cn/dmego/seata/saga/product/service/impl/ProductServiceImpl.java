@@ -2,7 +2,6 @@ package cn.dmego.seata.saga.product.service.impl;
 
 import cn.dmego.seata.saga.product.dao.ProductDao;
 import cn.dmego.seata.saga.product.service.ProductService;
-import io.seata.core.context.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Boolean reduceStock(Long productId, Integer count) throws Exception {
         logger.info("[reduceStock] 开始扣减库存, userId:{}, count: {}", productId, count);
-        logger.info("[reduceStock] XID: {}", RootContext.getXID());
 
         // 检查库存
         checkStock(productId, count);
@@ -45,7 +43,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Boolean compensateStock(Long productId, Integer count) throws Exception {
         logger.info("[compensateStock] 开始回滚库存, userId:{}, count: {}", productId, count);
-        logger.info("[compensateStock] XID: {}", RootContext.getXID());
 
         int result = productDao.compensateStock(productId, count);
         if(result == 0){

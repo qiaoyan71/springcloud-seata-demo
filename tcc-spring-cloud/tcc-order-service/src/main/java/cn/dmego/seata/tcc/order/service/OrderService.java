@@ -5,17 +5,17 @@ import io.seata.rm.tcc.api.BusinessActionContextParameter;
 import io.seata.rm.tcc.api.LocalTCC;
 import io.seata.rm.tcc.api.TwoPhaseBusinessAction;
 
+
 /**
- * @className: OrderService
+ * 订单服务
  *
- * @description: 订单服务
- * @author: ZengKai<dmeago@gmail.com>
- * @date: 2020/12/6 17:28
- **/
+ * @author qiaoyan
+ * @date 2022-11-24 16:06:47
+ */
 @LocalTCC
 public interface OrderService {
 
-    @TwoPhaseBusinessAction(name = "orderService", commitMethod = "orderConfirm", rollbackMethod = "orderCancel")
+    @TwoPhaseBusinessAction(name = "orderService", commitMethod = "orderConfirm", rollbackMethod = "orderCancel",useTCCFence = true)
     boolean orderTry(BusinessActionContext actionContext,
                      @BusinessActionContextParameter(paramName = "orderId") Long orderId,
                      @BusinessActionContextParameter(paramName = "userId") Long userId,

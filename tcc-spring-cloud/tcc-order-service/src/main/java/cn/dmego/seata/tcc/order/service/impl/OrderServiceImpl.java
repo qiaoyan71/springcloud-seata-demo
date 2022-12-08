@@ -3,32 +3,30 @@ package cn.dmego.seata.tcc.order.service.impl;
 import cn.dmego.seata.common.dto.OrderDTO;
 import cn.dmego.seata.common.util.ResultHolder;
 import cn.dmego.seata.tcc.order.dao.OrderDao;
-import cn.dmego.seata.tcc.order.proxy.AccountService;
+import cn.dmego.seata.tcc.order.feign.AccountService;
 import cn.dmego.seata.tcc.order.service.OrderService;
 import io.seata.rm.tcc.api.BusinessActionContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+
+
 /**
- * @className: OrderServiceImpl
+ * 订单服务impl
  *
- * @description: 订单服务
- * @author: ZengKai<dmeago@gmail.com>
- * @date: 2020/12/6 17:21
- **/
+ * @author qiaoyan
+ * @date 2022-11-24 16:25:49
+ */
 @Service
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
+    @Resource
+    private AccountService accountService;
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    @Autowired
-    AccountService accountService;
-
-    @Autowired
+    @Resource
     private OrderDao orderDao;
 
     @Override
@@ -37,9 +35,9 @@ public class OrderServiceImpl implements OrderService {
         String xId = actionContext.getXid();
         long branchId = actionContext.getBranchId();
         OrderDTO orderDTO = new OrderDTO(orderId, userId, productId, count, payAmount);
-        logger.info("[orderTry]: 当前 XID:{}, branchId:{}, 订单:{}", xId, branchId, orderDTO.toString());
+        log.info("[orderTry]: 当前 XID:{}, branchId:{}, 订单:{}", xId, branchId, orderDTO);
         // 扣减余额 Try
-        boolean aTry = accountService.accountTry(actionContext, userId, payAmount);
+        boolean aTry = accountService.accountTry(userId, payAmount).getData();
         if(!aTry){
             throw new RuntimeException("账户服务 Try 阶段失败.");
         }
@@ -52,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
         //事务成功，保存一个标识，供第二阶段进行判断
         ResultHolder.setResult(getClass(), actionContext.getXid(), "p");
 
-        logger.info("[orderTry]: 阶段成功");
+        log.info("[orderTry]: 阶段成功");
         return true;
     }
 
@@ -62,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
         String xId = actionContext.getXid();
         long branchId = actionContext.getBranchId();
         Long orderId = ((Long) actionContext.getActionContext("orderId"));
-        logger.info("[orderConfirm]: 当前 XID:{}, branchId:{}, 订单ID:{}", xId, branchId, orderId);
+        log.info("[orderConfirm]: 当前 XID:{}, branchId:{}, 订单ID:{}", xId, branchId, orderId);
         // 幂等控制，如果commit阶段重复执行则直接返回
         if (ResultHolder.getResult(getClass(), actionContext.getXid()) == null) {
             return true;
@@ -74,7 +72,7 @@ public class OrderServiceImpl implements OrderService {
         }
         // commit成功删除标识
         ResultHolder.removeResult(getClass(), actionContext.getXid());
-        logger.info("[orderConfirm]: 阶段成功");
+        log.info("[orderConfirm]: 阶段成功");
         return true;
     }
 
@@ -84,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
         String xId = actionContext.getXid();
         long branchId = actionContext.getBranchId();
         Long orderId = ((Long) actionContext.getActionContext("orderId"));
-        logger.info("[orderCancel]: 当前 XID:{}, branchId:{}, 订单ID:{}", xId, branchId, orderId);
+        log.info("[orderCancel]: 当前 XID:{}, branchId:{}, 订单ID:{}", xId, branchId, orderId);
         // 幂等控制，如果 cancel 阶段重复执行则直接返回
         if (ResultHolder.getResult(getClass(), actionContext.getXid()) == null) {
             return true;
@@ -96,7 +94,7 @@ public class OrderServiceImpl implements OrderService {
         }
         // cancel 成功删除标识
         ResultHolder.removeResult(getClass(), actionContext.getXid());
-        logger.info("[orderCancel]: 阶段成功");
+        log.info("[orderCancel]: 阶段成功");
         return true;
     }
 }

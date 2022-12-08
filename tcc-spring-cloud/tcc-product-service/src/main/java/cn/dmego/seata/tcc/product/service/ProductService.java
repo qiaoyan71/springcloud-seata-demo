@@ -6,16 +6,20 @@ import io.seata.rm.tcc.api.LocalTCC;
 import io.seata.rm.tcc.api.TwoPhaseBusinessAction;
 
 /**
- * @className: ProductService
+ * 产品服务
  *
- * @description: 仓库服务
- * @author: ZengKai<dmeago@gmail.com>
- * @date: 2020/12/8 17:30
- **/
+ * @author qiaoyan
+ * @date 2022-11-24 15:59:56
+ */
 @LocalTCC
 public interface ProductService {
 
-    @TwoPhaseBusinessAction(name = "productService", commitMethod = "productConfirm", rollbackMethod = "productCancel")
+    @TwoPhaseBusinessAction(
+            name = "productService",            // TCC bean name, must be unique
+            commitMethod = "productConfirm",    // commit method name
+            rollbackMethod = "productCancel",   // rollback method name
+            useTCCFence = true                  // 开启后自动处理 幂等，悬挂 |whether use TCC fence (idempotent,non_rollback,suspend)
+    )
     boolean productTry(BusinessActionContext actionContext,
                        @BusinessActionContextParameter(paramName = "productId") Long productId,
                        @BusinessActionContextParameter(paramName = "count") Integer count);

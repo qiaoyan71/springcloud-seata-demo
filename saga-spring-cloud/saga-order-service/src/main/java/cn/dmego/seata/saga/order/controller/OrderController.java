@@ -10,8 +10,8 @@ import javax.annotation.Resource;
 /**
  * OrderController
  *
- * @author dmego
- * @date 2021/3/31 10:51
+ * @author qiaoyan
+ * @date 2022-12-05 15:23:47
  */
 @RestController
 @RequestMapping("order")
@@ -25,13 +25,13 @@ public class OrderController {
                                @RequestParam("userId") Long userId,
                                @RequestParam("productId") Long productId,
                                @RequestParam("amount") Integer amount,
-                               @RequestParam("count") Integer count) throws Exception {
+                               @RequestParam("count") Integer count){
 
         return orderService.createOrder(orderId, userId, productId, amount, count);
     }
 
     @RequestMapping("/revokeOrder")
-    public Boolean revokeOrder(@RequestParam("orderId") Long orderId) throws Exception {
+    public Boolean revokeOrder(@RequestParam("orderId") Long orderId){
         return orderService.revokeOrder(orderId);
     }
 

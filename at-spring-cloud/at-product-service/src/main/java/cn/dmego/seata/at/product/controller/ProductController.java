@@ -3,10 +3,16 @@ package cn.dmego.seata.at.product.controller;
 
 import cn.dmego.seata.at.product.service.ProductService;
 import cn.dmego.seata.common.dto.ProductDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import cn.dmego.seata.common.dto.ReturnResult;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @className: ProductController
@@ -17,22 +23,22 @@ import org.springframework.web.bind.annotation.*;
  **/
 @RestController
 @RequestMapping("/product")
+@Slf4j
 public class ProductController {
 
-    private Logger logger = LoggerFactory.getLogger(ProductController.class);
-
-    @Autowired
+    @Resource
     private ProductService productService;
 
     @GetMapping("/getPrice")
-    public Integer getPrice(@RequestParam("productId") Long productId){
-        return productService.getPriceById(productId);
+    public ReturnResult<Integer> getPrice(@RequestParam("productId") Long productId){
+        Integer priceById = productService.getPriceById(productId);
+        return ReturnResult.success(priceById);
     }
 
     @PostMapping("/reduce-stock")
-    public boolean reduceStock(@RequestBody ProductDTO productDTO) throws Exception {
-        logger.info("[reduceStock] 收到减少库存请求, 商品:{}, 数量:{}", productDTO.getProductId(), productDTO.getCount());
-        return productService.reduceStock(productDTO.getProductId(), productDTO.getCount());
+    public ReturnResult<Boolean> reduceStock(@RequestBody ProductDTO productDTO) throws Exception {
+        log.info("[reduceStock] 收到减少库存请求, 商品:{}, 数量:{}", productDTO.getProductId(), productDTO.getCount());
+        return ReturnResult.success(productService.reduceStock(productDTO.getProductId(), productDTO.getCount()));
     }
 
 }

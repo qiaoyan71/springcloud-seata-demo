@@ -8,10 +8,10 @@ import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 /**
- * OrderDao
+ * mapper
  *
- * @author dmego
- * @date 2021/3/31 10:51
+ * @author qiaoyan
+ * @date 2022-12-05 15:25:31
  */
 @Mapper
 @Repository

@@ -11,28 +11,25 @@ SpringCloud 下的 Seata 分布式事务， AT 模式、TCC 模式 和 SAGA 模�
 - 帐户服务：从用户帐户中扣除余额。
 
 ### 架构图
-
-<img src="https://cdn.jsdelivr.net/gh/dmego/images@master/img/20201209085813.png" alt="architecture" style="zoom:67%;" />
+![img.png](doc/images/01.png)
 
 ### SEATA 的分布式交易解决方案
+![img.png](doc/images/02.png)
 
-<img src="https://cdn.jsdelivr.net/gh/dmego/images@master/img/20201209085923.png" alt="solution" style="zoom:67%;" />
-
-## 环境说明
+## 环境说明-版本
+![img.png](doc/images/img.png)
 ```yaml
-mysql: 8.0.12
-consul: 1.9.2
-seata: 1.5.0-SNAPSHOT
-spring-boot: 2.4.5
-spring-cloud: 2020.0.2
+mysql: 8.0.30
+seata: 1.5.2
+nacos: 2.1.2
+spring-cloud: 2.2.9.RELEASE
 ```
 
 ## 工程目录结构
 
 ```
 springcloud-seata-demo
-├── common-parent              // 父POM工程
-├── common-service             // 公共服务
+├── seata-common               // 公共
 ├── at-spring-cloud            // AT 模式工程示例
 │  ├── at-account-service      // AT-账户服务
 │  ├── at-business-service     // AT-业务服务
@@ -55,8 +52,5 @@ springcloud-seata-demo
 └── zsql                       // 订单库存示例 sql
 ```
 
-
-
 ### SAGA 模式下的流程图
-
-<img src="https://cdn.jsdelivr.net/gh/dmego/images/img/image-20210331110320795.png" style="zoom:40%;"  alt="SAGA 模式下的流程图"/>
+![img.png](doc/images/03.png)

@@ -2,25 +2,28 @@ package cn.dmego.seata.saga.business.controller;
 
 import cn.dmego.seata.common.dto.BusinessDTO;
 import cn.dmego.seata.saga.business.service.BusinessService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
+
+
 /**
- * BusinessController
+ * 业务controller
  *
- * @author dmego
- * @date 2021/3/31 10:48
+ * @author qiaoyan
+ * @date 2022-12-05 10:55:01
  */
 @RestController
 @RequestMapping("/saga")
 public class BusinessController {
 
-    @Autowired
+    @Resource
     BusinessService businessService;
 
-    @RequestMapping("/buy")
+    @PostMapping("/buy")
     public String handlerBusiness(@RequestBody BusinessDTO businessDTO) {
         return businessService.handlerBusiness(businessDTO);
     }

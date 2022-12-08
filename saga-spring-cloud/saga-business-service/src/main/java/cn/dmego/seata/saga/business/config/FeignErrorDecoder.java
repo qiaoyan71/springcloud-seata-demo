@@ -3,8 +3,7 @@ package cn.dmego.seata.saga.business.config;
 import feign.FeignException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -12,9 +11,8 @@ import org.springframework.context.annotation.Configuration;
  * @date 2021/05/10 18:36
  */
 @Configuration
+@Slf4j
 public class FeignErrorDecoder extends ErrorDecoder.Default {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public Exception decode(String methodKey, Response response) {
@@ -25,7 +23,7 @@ public class FeignErrorDecoder extends ErrorDecoder.Default {
                 exception = new RuntimeException(exception.getMessage());
             }
         }catch(Exception ex){
-            logger.error(ex.getMessage(), ex);
+            log.error(ex.getMessage(), ex);
         }
         return exception;
     }
